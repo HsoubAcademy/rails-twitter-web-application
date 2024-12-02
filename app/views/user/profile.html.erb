@@ -1,0 +1,37 @@
+<div class="row">
+    <% if @user.avatar.attached? %>
+        <div class="col">
+            <img src="<%= (url_for(@user.avatar)) %>" class="object-fit-cover rounded-4" height="300px" style="width: 300px;">
+        </div>
+    <% end %>
+    <h2 class="mb-2"> <%= @user.username %> </h2>
+    <% if @user.id == current_user.id %>
+        <form action="/user/username" method="post">
+            <div class="input-group mb-3" style="max-width: 500px">
+                <input type="text" name="username" placeholder="<%= t('change_username') %>" class="form-control">
+                <button type="submit" class="btn btn-primary" style="padding: 0 1.15rem"><%= t('change_username_btn') %></button>
+            </div>
+        </form>
+        <form enctype="multipart/form-data" accept-charset="UTF-8" action="/user/avatar" method="post">
+            <div class="input-group mb-3" style="max-width: 500px">
+                <input type="button" class="form-control text-start" value="<%= t('select_image') %>" onclick="document.getElementById('file').click()">
+                <input id="file" style="display: none" name="avatar" type="file" class="from-control">
+                <button type="submit" class="btn btn-primary"><%= t('change_profile_avatar') %></button>
+            </div>
+        </form>
+    <% end %>
+    <a href="/user/index"><%= t('view_all_users_page') %></a>
+</div>
+<hr class="hr">
+<% @feeds.each do |feed| %>
+    <div class="row">
+        <div class="card mb-3 px-0 m-auto" style="width: 32rem">
+            <% if feed.is_a?(Post) %>
+                <%= render "shared/post_card", post: feed, type: 'post' %>
+            <% else feed.is_a?(Repost) %>
+                <p class="card-text"><%= t('user_add_new_post_part1')  %><%=  feed.user.username  %><%=  t('user_repost') %></p>
+                <%= render "shared/post_card", post: feed.post, type: 'repost' %>
+            <% end %>
+        </div>
+    </div>
+<% end %>

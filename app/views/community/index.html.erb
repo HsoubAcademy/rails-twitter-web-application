@@ -1,0 +1,46 @@
+<div class="card mb-3">
+  <div class="card-body">
+    <form enctype="multipart/form-data" action="/community/create" method="post">
+      <h5 class="card-title"><%= t('create_new_community') %></h5>
+      <div class="input-group mb-3">
+        <textarea required oninvalid="setCustomValidity('<%= t('community_name_required') %>')" oninput="setCustomValidity('')"
+        name="name" class="form-control" placeholder="<%= t('community_name') %>"></textarea>
+        <button onclick="document.getElementById('image').click()" class="btn btn-primary" type="button">
+          <span class="material-symbols-outlined"> image </span>
+        </button>
+      </div>
+      <img class="mb-3" id="image-preview" style="width: 300px; height: 200px; object-fit: cover; display: none" />
+      <input onchange="
+        document.getElementById('image-preview').src = window.URL.createObjectURL(this.files[0]);
+        document.getElementById('image-preview').style.display = '';
+      " name="image" class="form-control" type="file" id="image" style="display: none" >
+      <button class="btn btn-primary d-block" type="submit"><%= t('create') %></button>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <% @communities.each do |community| %>
+    <div class="col col-md-6">
+      <div class="card mb-3">
+        <% if community.image.attached? %>
+          <img src="<%= (url_for(community.image)) %>" height="300px" class="object-fit-cover">
+        <% end %>
+        <div class="card-body">
+          <h5><a class="text-black text-decoration-none" href="/community/<%= community.id %>"><%= community.name %></a></h5>
+          <% if @user.communities.select {|c| c.id == community.id}.count == 0 %>
+            <form action="/community/join" method="post">
+              <input type="hidden" name="community_id" value="<%= community.id %>">
+              <button class="btn btn-primary" type="submit"><%= t('join') %></button>
+            </form>
+          <% else %>
+            <form action="/community/exit" method="post">
+              <input type="hidden" name="community_id" value="<%= community.id %>">
+              <button class="btn btn-primary" type="submit"><%= t('exit') %></button>
+            </form>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <%end%>
+</div>

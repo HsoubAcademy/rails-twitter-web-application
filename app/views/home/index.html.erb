@@ -1,0 +1,29 @@
+<%= render "shared/create_post", community_id: nil %>
+
+<% @feeds.each do |feed| %>
+  <div class="card m-auto mb-3" style="width: 32rem;">
+  <% if feed.is_a?(Post) %>
+    <% if feed.community_id == nil %>
+      <p class="card-text"><%= t('user_add_new_post_part1')  %><%=  feed.user.username  %><%=  t('user_add_new_post_part2') %></p>
+      <%= render "shared/post_card", post: feed, type: 'post'  %>
+    <%  else %>
+      <p class="card-text"><%=  t('user_add_new_post_to_community') %> <%= feed.community.name %></p>
+      <%= render "shared/post_card", post: feed, type: 'post'  %>
+    <%  end %>
+  <% elsif feed.is_a?(Comment) %>
+    <p class="card-text"><%= t('user_add_new_post_part1')  %><%=  feed.user.username  %><%=  t('user_add_new_comment') %></p>
+    <%= render "shared/post_card", post: feed.post, type: 'comment'  %>
+  <% elsif feed.is_a?(Repost) %>
+    <p class="card-text"><%= t('user_add_new_post_part1')  %><%=  feed.user.username  %><%=  t('user_repost') %></p>
+    <%= render "shared/post_card", post: feed.post, type: 'repost'  %>
+  <% end %>
+  </div>
+<% end %>
+
+<nav class="m-auto" style="width: fit-content">
+  <ul class="pagination">
+    <% @pages_count.times do |i| %>
+      <li class="page-item"><a class="page-link" href="?page=<%= i + 1 %>"> <%= i + 1 %> </a></li>
+    <% end %>
+  </ul>
+</nav>

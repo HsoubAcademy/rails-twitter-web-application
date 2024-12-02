@@ -1,0 +1,17 @@
+<% @users.each do |user| %>
+    <div class="row justify-content-between">
+        <h3 class="d-inline-block w-auto"><a class="text-black text-decoration-none" href="/user/<%= user.id %>"> <%= user.username %></a></h3>
+        <% if user.followers.select {|relationship| relationship.follower_id == current_user.id}.count > 0 %>
+            <form class="d-inline-block w-auto" action="/user/unfollow" method="post">
+                <input type="hidden" name="followed_id" value="<%= user.id %>">
+                <button type="submit" class="btn btn-primary"><%= t('unfollow') %></button>
+            </form>
+        <% else %>
+            <form class="d-inline-block w-auto" action="/user/follow" method="post">
+                <input type="hidden" name="followed_id" value="<%= user.id %>">
+                <button type="submit" class="btn btn-primary"><%= t('follow') %></button>
+            </form>
+        <% end %>
+    </div>
+    <hr class="hr" />
+<% end %>

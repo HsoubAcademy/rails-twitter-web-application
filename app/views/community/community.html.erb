@@ -1,0 +1,27 @@
+<h1><%= @community.name %></h1>
+<hr class="hr">
+<div class="row">
+  <div class="col col-md-8">
+    <% if @user.communities.select {|c| c.id == @community.id}.count > 0 %>
+      <%= render "shared/create_post", community_id: @community.id %>
+      <% @community.posts.each do |post| %>
+        <div class="card mb-3" style="width: 36rem; margin: auto">
+          <%= render "shared/post_card", post: post, type: "post" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="col col-md-4">
+    <h4 class="mb-3"> <%= t('community_users_count') %> (<%= @community.users.count %>)</h4>
+    <% @community.users.each do |user| %>
+      <div class="card mb-2">
+        <div class="card-header p-0">
+          <% if user.avatar.attached? %>
+            <img src="<%= (url_for(user.avatar)) %>" height="60px" style="width: 60px" class="object-fit-cover rounded-1">
+            <h5 class="d-inline-block"><a class="text-black text-decoration-none" href="/user/<%= user.id %>"><%= user.username %></a> </h5>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
